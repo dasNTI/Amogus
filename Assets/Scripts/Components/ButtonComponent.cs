@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ButtonComponent : GameComponent
+public abstract class ButtonComponent : GameComponent
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,4 +18,14 @@ public class ButtonComponent : GameComponent
     {
         
     }
+
+    public override void HandleInteracting() {
+        OnClick();
+    }
+    public override void OnStopInteracting() {
+        OnRelease();
+    }
+
+    public abstract void OnClick();
+    public abstract void OnRelease();
 }

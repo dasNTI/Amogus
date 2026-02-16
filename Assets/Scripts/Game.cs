@@ -32,6 +32,7 @@ public abstract class Game : MonoBehaviour
 
     public abstract void InitialSetup();
     public abstract void Reset();
+
     private void Completed()
     {
         OnComplete();
@@ -41,12 +42,12 @@ public abstract class Game : MonoBehaviour
     private void Unlock()
     {
         foreach (string c in components.Keys)
-            components[c].Locked = false;
+            components[c].gameActive = false;
     }
     private void Lock()
     {
         foreach (string c in components.Keys)
-            components[c].Locked = false;
+            components[c].gameActive = false;
     }
 
     public void RegisterComponent(string name, GameComponent gc)
