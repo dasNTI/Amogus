@@ -7,7 +7,7 @@ public abstract class Game : MonoBehaviour
 {
     const int CameraMoveOffset = 10;
 
-    private Dictionary<string, GameComponent> components = new Dictionary<string, GameComponent>();
+    public Dictionary<string, GameComponent> components = new Dictionary<string, GameComponent>();
     private Action OnComplete;
     void Start()
     {
@@ -16,13 +16,13 @@ public abstract class Game : MonoBehaviour
 
     public void Close()
     {
-        Camera.main.transform.DOMoveY(transform.position.y, 0.5f);
-        Lock();
+        Camera.main.transform.DOMoveY(transform.position.y + CameraMoveOffset, 0.5f);
+        Lock(); 
     }
 
     public void Open(Action onComplete, bool imposter = false)
     {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y - CameraMoveOffset, transform.position.z);
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y - CameraMoveOffset, Camera.main.transform.position.z);
         Camera.main.transform.DOMoveY(transform.position.y, 0.5f);
         Reset();
         if (imposter) return;
@@ -33,8 +33,9 @@ public abstract class Game : MonoBehaviour
     public abstract void InitialSetup();
     public abstract void Reset();
 
-    private void Completed()
+    public void Completed()
     {
+        Close();
         OnComplete();
         OnComplete = null;
     }
@@ -42,7 +43,7 @@ public abstract class Game : MonoBehaviour
     private void Unlock()
     {
         foreach (string c in components.Keys)
-            components[c].gameActive = false;
+            components[c].gameActive = true;
     }
     private void Lock()
     {

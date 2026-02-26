@@ -2,16 +2,19 @@ using UnityEngine;
 
 public abstract class GameComponent : MonoBehaviour
 {
-    private PolygonCollider2D collider;
+    private PolygonCollider2D col;
+    public Game ParentGame;
 
     public bool gameActive = false;
-    private bool interactable = true;
+    public bool interactable = true;
     private bool interacting = false;
     [SerializeField] private string ComponentName;
 
     private void Awake()
     {
-        transform.parent.GetComponent<Game>().RegisterComponent(ComponentName, this);
+        ParentGame = transform.parent.GetComponent<Game>();
+        ParentGame.RegisterComponent(ComponentName, this);
+        col = GetComponent<PolygonCollider2D>();
     }
     void Start()
     {
@@ -22,9 +25,13 @@ public abstract class GameComponent : MonoBehaviour
     void Update()
     {
         if (!gameActive) return;
-        if (Input.GetMouseButtonDown(2) && !interacting) {
-
-        }else if (Input.GetMouseButtonUp(2)) {
+        if (!interactable) return;
+        if (Input.GetMouseButtonDown(0)) {
+            Debug.Log("yeet");
+            if (!col.OverlapPoint(Camera.main.ScreenToWorldPoint(Input.mousePosition))) return;
+            interacting = true;
+            OnStartInteracting();
+        }else if (interacting && Input.GetMouseButtonUp(0) ) {
             interacting = false;
             OnStopInteracting();
         }
@@ -32,7 +39,8 @@ public abstract class GameComponent : MonoBehaviour
 
     public abstract void SetDefaultState(Vector3 data);
 
-    public abstract void HandleInteracting();
+    public abstract void OnStartInteracting();
 
     public abstract void OnStopInteracting();
+    public abstract void GameReset();
 }

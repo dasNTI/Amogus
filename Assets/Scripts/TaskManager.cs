@@ -1,11 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class TaskManager : MonoBehaviour
 {
-    public static Task[] Tasklist;
+    public static List<Task> Tasklist;
+    [SerializeField] private List<Task> TaskCatalog;
     void Start()
     {
-        
+        Tasklist = TaskCatalog;
     }
 
     // Update is called once per frame
@@ -23,6 +25,18 @@ public class TaskManager : MonoBehaviour
         }
         return result;
     }
+
+    public static void TickOffTask(Task t)
+    {
+        Tasklist.Remove(t);
+        if (!t.TwoPart) return;
+
+        Task followup = new Task();
+        followup.name = t.followUpName;
+        followup.followUpLabel = t.followUpLabel;
+        followup.game = t.followUpGame;
+        Tasklist.Add(followup);
+    }
 }
 
 [System.Serializable]
@@ -32,6 +46,7 @@ public class Task
     public string label;
     public Game game;
     public bool TwoPart = false;
+    public string followUpName;
     public string followUpLabel;
     public Game followUpGame = null;
 }

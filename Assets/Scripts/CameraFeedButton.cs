@@ -53,6 +53,7 @@ public class CameraFeedButton : MonoBehaviour
     public void HideButton()
     {
         btn.interactable = false;
+        CurrentCodeContent = "";
     }
 
     public void OnBtnPress()
@@ -61,9 +62,11 @@ public class CameraFeedButton : MonoBehaviour
         {
             CurrentTask.game.Open(() =>
             {
-
+                TaskManager.TickOffTask(CurrentTask);
+                feed.CurrentActiveGame = null;
             });
             feed.CurrentActiveGame = CurrentTask.game;
+            HideButton();
         }
     }
 }

@@ -35,6 +35,7 @@ public class CameraFeed : MonoBehaviour
 
     void Scan()
     {
+        if (CurrentActiveGame != null) return;
         try
         {
             IBarcodeReader reader = new BarcodeReader();
