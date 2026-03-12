@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class ButtonComponent : GameComponent
 {
-    public override void SetDefaultState(Vector3 data)
+    public override void SetDefaultState(float data)
     {
         
     }

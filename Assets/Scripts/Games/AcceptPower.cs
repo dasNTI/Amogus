@@ -18,8 +18,4 @@ public class AcceptPower : Game
     {
         
     }
-    public override void Reset()
-    {
-        components["PowerButton"].GameReset();
-    }
 }

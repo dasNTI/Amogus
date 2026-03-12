@@ -7,7 +7,6 @@ public class CameraFeed : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Material mat;
     WebCamTexture CamTexture;
-    [SerializeField] private TMPro.TextMeshProUGUI UITextMeshPro;
     [SerializeField] private CameraFeedButton button;
     [SerializeField] private int ScaleFactor = 4;
     [SerializeField] private int GameResetThreshold = 5;
@@ -26,39 +25,40 @@ public class CameraFeed : MonoBehaviour
         FeedRect = GetComponent<RectTransform>().rect;
         WebCamDevice[] devices = WebCamTexture.devices;
         CamTexture = new WebCamTexture(devices[0].name, Screen.width / ScaleFactor, Screen.height / ScaleFactor);
+# if UNITY_EDITOR
+        CamTexture = new WebCamTexture(devices[1].name, Screen.width / ScaleFactor, Screen.height / ScaleFactor);
+# endif
+
 
         mat.SetTexture("_MainTex", CamTexture);
         CamTexture.Play();
         InvokeRepeating("Scan", 1, 0.5f);
-        UITextMeshPro.text = GetComponent<RectTransform>().rect.width + ", " + GetComponent<RectTransform>().rect.height;
     }
 
     void Scan()
     {
-        if (CurrentActiveGame != null) return;
-        try
+        IBarcodeReader reader = new BarcodeReader();
+        Result result = reader.Decode(CamTexture.GetPixels32(), CamTexture.width, CamTexture.height);
+        if (result != null)
         {
-            IBarcodeReader reader = new BarcodeReader();
-            Result result = reader.Decode(CamTexture.GetPixels32(), CamTexture.width, CamTexture.height);
-            if (result != null)
-            {
-                float x = (result.ResultPoints[0].X + result.ResultPoints[2].X) / 2 / CamTexture.width;
-                float y = (result.ResultPoints[0].Y + result.ResultPoints[2].Y) / 2 / CamTexture.height;
+            if (CurrentActiveGame != null) return;
+            float x = (result.ResultPoints[0].X + result.ResultPoints[2].X) / 2 / CamTexture.width;
+            float y = (result.ResultPoints[0].Y + result.ResultPoints[2].Y) / 2 / CamTexture.height;
 
-                QrCodePosition = new Vector2((1 - y) * FeedRect.width, -x * FeedRect.height);
+            QrCodePosition = new Vector2((1 - y) * FeedRect.width, -x * FeedRect.height);
 
-                button.CurrentButton(QrCodePosition, result.Text);
-                emptyChecks = 0;
-            } else
+            button.CurrentButton(QrCodePosition, result.Text);
+            emptyChecks = 0;
+        } else
+        {
+            button.HideButton();
+            if (CurrentActiveGame == null) return;
+            emptyChecks++;
+            if (emptyChecks > GameResetThreshold)
             {
-                button.HideButton();
-                emptyChecks++;
-                if (CurrentActiveGame != null && emptyChecks > GameResetThreshold)
-                {
-                    CurrentActiveGame.Close();
-                    CurrentActiveGame = null;
-                }
+                CurrentActiveGame.Close();
+                CurrentActiveGame = null;
             }
-        }catch {}
+        }
     }
 }

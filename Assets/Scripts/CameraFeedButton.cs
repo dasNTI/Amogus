@@ -21,7 +21,7 @@ public class CameraFeedButton : MonoBehaviour
 
     public void CurrentButton(Vector2 position, string data)
     {
-        btn.interactable = true;
+        btn.targetGraphic.color = Color.white;
         rt.anchoredPosition = position;
         if (CurrentCodeContent == data)
         {
@@ -29,13 +29,12 @@ public class CameraFeedButton : MonoBehaviour
         }
         CurrentCodeContent = data;
 
-        string[] args = data.Split('_');
-        switch(args[0])
+        switch(data[0])
         {
-            case "T":
+            case 'T':
                 btn.image.sprite = UseImage;
-                Task t = TaskManager.GetTask(args[1]);
-                if (t == null)
+                Task t = TaskManager.GetTask(data.Substring(2));
+                if (t == null || t.IsDone)
                 {
                     btn.interactable = false;
                     return;
@@ -44,7 +43,7 @@ public class CameraFeedButton : MonoBehaviour
                 CurrentTask = t;
                 break;
 
-            case "P":
+            case 'P':
                 btn.image.sprite = ReportImage;
                 break;
         }
@@ -52,6 +51,7 @@ public class CameraFeedButton : MonoBehaviour
 
     public void HideButton()
     {
+        btn.targetGraphic.color = Color.clear;
         btn.interactable = false;
         CurrentCodeContent = "";
     }
@@ -60,10 +60,11 @@ public class CameraFeedButton : MonoBehaviour
     {
         if (CurrentTask != null)
         {
-            CurrentTask.game.Open(() =>
+            CurrentTask.game.Open(CurrentTask, () =>
             {
                 TaskManager.TickOffTask(CurrentTask);
                 feed.CurrentActiveGame = null;
+                CurrentTask = null;
             });
             feed.CurrentActiveGame = CurrentTask.game;
             HideButton();
