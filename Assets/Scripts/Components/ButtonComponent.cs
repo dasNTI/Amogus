@@ -2,11 +2,6 @@ using UnityEngine;
 
 public abstract class ButtonComponent : GameComponent
 {
-    public override void SetDefaultState(float data)
-    {
-        
-    }
-
     public override void OnStartInteracting() {
         OnClick();
     }

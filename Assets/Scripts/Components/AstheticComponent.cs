@@ -12,5 +12,4 @@ public abstract class AstheticComponent : GameComponent
     public override void OnStartInteracting() { }
     public override void WhileInteracting() { }
     public override void OnStopInteracting() { }
-    public override void SetDefaultState(float data) {}
 }

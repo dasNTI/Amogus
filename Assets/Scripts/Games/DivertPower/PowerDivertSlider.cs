@@ -30,11 +30,6 @@ public class PowerDivertSlider : SliderComponent
         ((DivertPower)ParentGame).SetOthers(powerBar.ComponentName, CurrentValue);
     }
 
-    public override void SetDefaultState(float data)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void Activate()
     {
         sr.color = Color.white;

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class GameComponent : MonoBehaviour
@@ -5,12 +6,17 @@ public abstract class GameComponent : MonoBehaviour
     public static float UnitsPerPixel = 0;
 
     [SerializeField] public string ComponentName;
-    public PolygonCollider2D col;
+    [NonSerialized] public PolygonCollider2D col;
     public Game ParentGame;
 
-    public bool gameActive = false;
-    public bool interactable = true;
-    private bool interacting = false;
+    [NonSerialized] public bool gameActive = false;
+    [NonSerialized] public bool interactable = true;
+    [NonSerialized] public bool interacting = false;
+
+    public T ReturnAs<T>() where T : GameComponent
+    {
+        return (T)this;
+    }
 
     public virtual void Awake()
     {
@@ -40,7 +46,7 @@ public abstract class GameComponent : MonoBehaviour
         if (interacting) WhileInteracting();
     }
 
-    public virtual void SetDefaultState(float data) { }
+    public virtual void SetDefaultState(float[] data) { }
 
     public abstract void OnStartInteracting();
     public virtual void WhileInteracting() { }
