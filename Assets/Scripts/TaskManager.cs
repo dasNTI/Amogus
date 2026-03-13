@@ -5,11 +5,16 @@ using DG.Tweening;
 using UnityEditor;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class TaskManager : MonoBehaviour
 {
     public static List<Task> Tasklist = new List<Task>();
     public static TaskManager instance = null;
+
+    public static int DoneTasks = 0;        // Die beiden Sachen wären im Multiplayer gesynct
+    public static int TotalTaskCount = 0;
+
     [SerializeField] private List<Task> TaskCatalog;
     [SerializeField] private VisibleTasklist VisibleList;
     [SerializeField] private TaskMap taskMap;
@@ -17,11 +22,11 @@ public class TaskManager : MonoBehaviour
     [Header("Complete Animation")]
     [SerializeField] private RectTransform CompletedText;
     [SerializeField] private float CompletedTextOffset;
+    [SerializeField] private Image ProgressBarSr;
 
 
     private void Awake()
     {
-        Tasklist.AddRange(TaskCatalog);
         if (instance == null)
         {
             instance = this;
@@ -30,10 +35,12 @@ public class TaskManager : MonoBehaviour
         {
             return;
         }
+        if (TotalTaskCount == 0) DistributeTasks();
     }
 
     void Start()
     {
+        ProgressBarSr.material = Instantiate(ProgressBarSr.material);
         VisibleList.UpdateList();
         taskMap.UpdateMap();
     }
@@ -42,6 +49,15 @@ public class TaskManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void DistributeTasks() // Müsste man im Multiplayer überarbeiten
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            Tasklist.Add(TaskCatalog[i]);
+        }
+        TotalTaskCount = Tasklist.Count;
     }
 
     public static Task GetTask(string name)
@@ -76,6 +92,9 @@ public class TaskManager : MonoBehaviour
             Tasklist[index] = t;
         }
 
+        DoneTasks++;
+        instance.ProgressBarSr.material.DOFloat(DoneTasks * 1f / TotalTaskCount, "_Progress", 0.5f);
+        if (DoneTasks == TotalTaskCount) GameStateManager.CurrentGameState = GameState.CrewmatesWon;
         
         instance.VisibleList.UpdateList();
         instance.taskMap.UpdateMap();
