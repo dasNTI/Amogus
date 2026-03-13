@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FilesFolderCover : AstheticComponent
+public class FilesFolderCover : AestheticComponent
 {
     [SerializeField] private Sprite TabletSprite;
     [SerializeField] private Sprite OtherSprite;

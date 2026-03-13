@@ -10,13 +10,8 @@ public abstract class GameComponent : MonoBehaviour
     public Game ParentGame;
 
     [NonSerialized] public bool gameActive = false;
-    [NonSerialized] public bool interactable = true;
+    public bool interactable = true;
     [NonSerialized] public bool interacting = false;
-
-    public T ReturnAs<T>() where T : GameComponent
-    {
-        return (T)this;
-    }
 
     public virtual void Awake()
     {
@@ -53,4 +48,9 @@ public abstract class GameComponent : MonoBehaviour
 
     public abstract void OnStopInteracting();
     public abstract void GameReset(Task task);
+
+    public T ReturnAs<T>() where T : GameComponent
+    {
+        return (T)this;
+    }
 }

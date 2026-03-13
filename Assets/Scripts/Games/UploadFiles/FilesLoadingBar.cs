@@ -3,7 +3,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class FilesLoadingBar : AstheticComponent
+public class FilesLoadingBar : AestheticComponent
 {
     private SpriteRenderer sr;
     [SerializeField] private TMPro.TextMeshProUGUI ProgressLabel;

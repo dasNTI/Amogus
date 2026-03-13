@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PowerBar : AstheticComponent
+public class PowerBar : AestheticComponent
 {
     private SpriteRenderer sr;
 

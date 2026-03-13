@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FillBar : AstheticComponent
+public class FillBar : AestheticComponent
 {
     [SerializeField] private float MaxValue;
     [SerializeField] private float MinValue;

@@ -9,7 +9,7 @@ public abstract class Game : MonoBehaviour
 
     public Dictionary<string, GameComponent> components = new Dictionary<string, GameComponent>();
     private Action OnComplete;
-    public bool gameActive;
+    [NonSerialized] public bool gameActive;
     void Start()
     {
         InitialSetup(); 
@@ -64,6 +64,7 @@ public abstract class Game : MonoBehaviour
         {
             components[c].gameActive = false;
             DOTween.Kill(components[c]);
+            components[c].CancelInvoke();
         }
     }
 
@@ -75,5 +76,10 @@ public abstract class Game : MonoBehaviour
     public void DeleteComponent(string name)
     {
         components.Remove(name);
+    }
+
+    public T ReturnAs<T>() where T : Game
+    {
+        return (T)this;
     }
 }
