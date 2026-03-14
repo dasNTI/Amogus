@@ -53,7 +53,7 @@ public class TaskManager : MonoBehaviour
 
     public void DistributeTasks() // Müsste man im Multiplayer überarbeiten
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < TaskCatalog.Count; i++)
         {
             Tasklist.Add(TaskCatalog[i]);
         }
@@ -90,11 +90,11 @@ public class TaskManager : MonoBehaviour
             int index = Tasklist.IndexOf(t);
             t.IsDone = true;
             Tasklist[index] = t;
-        }
 
-        DoneTasks++;
-        instance.ProgressBarSr.material.DOFloat(DoneTasks * 1f / TotalTaskCount, "_Progress", 0.5f);
-        if (DoneTasks == TotalTaskCount) GameStateManager.CurrentGameState = GameState.CrewmatesWon;
+            DoneTasks++;
+            instance.ProgressBarSr.material.DOFloat(DoneTasks * 1f / TotalTaskCount, "_Progress", 0.5f);
+            if (DoneTasks == TotalTaskCount) GameStateManager.CurrentGameState = GameState.CrewmatesWon;
+        }
         
         instance.VisibleList.UpdateList();
         instance.taskMap.UpdateMap();
